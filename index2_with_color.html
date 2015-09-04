@@ -82,8 +82,20 @@
 		var counter = 0;  //counts the number of circles created
 		var circles = [ ]; //array that will hold all the circles created in the app
 
-	
+		// random hex color function
+		var randomFill = function()
+		{
+			var arr = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'];
+			var output = '#';
+			for(var i=0;i<6;i++)
+			{
+				var t = Math.floor(Math.random()*arr.length);
+				output += arr[t];
+			}
+			return output;
 
+		}
+		
 		//a loop that updates the circle's position on the screen
 		this.loop = function()
 		{
@@ -104,10 +116,22 @@
 						var distance = Math.sqrt(Math.pow(x1-x2,2) + Math.pow(y1-y2,2))
 						if (circles[circle1].info.radius + circles[circle2].info.radius >= distance)
 						{
-							delete circles[circle1];
-							delete circles[circle2];
-							document.getElementById(circle1).remove();
-							document.getElementById(circle2).remove();
+							circles[circle1].info.velocity.x *= -1;
+							circles[circle1].info.velocity.y *= -1;
+							// this invokes the random fill function earlier in the code
+							// document.getElementById(circles[i].info.id) is what we do to select
+							// our circles on an dom level.
+							document.getElementById(circles[circle1].info.id).style.fill = randomFill();
+							circles[circle2].info.velocity.x *= -1;
+							circles[circle2].info.velocity.y *= -1;
+						// this fixes the bug earlier in our code. it pushes circles away from each other
+						// so that they have a much lower chance of getting caught inside one another
+							while(distance <= circles[circle1].info.radius + circles[circle2].info.radius) {
+								circles[circle2].info.cx += circles[circle1].info.velocity.x
+								circles[circle2].info.cy += circles[circle1].info.velocity.y
+								distance = Math.sqrt(Math.pow(circles[circle1].info.cx-circles[circle2].info.cx,2)+Math.pow(circles[circle1].info.cy-circles[circle2].info.cy,2));
+							}
+						document.getElementById(circles[circles2].info.id).style.fill = randomFill();
 						}
 					}
 				}
